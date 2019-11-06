@@ -1,39 +1,53 @@
+#!/bin/bash
+
+REQUIREMENTS="jupyter jupyterlab numpy pandas matplotlib django"
 MINICONDA_PATH=~/goinfre/miniconda3
-export PATH="$MINICONDA_PATH/bin:$PATH"
 
 login=$(whoami)
 curr_python=$(which python)
 mini_path=/Users/$login/goinfre/miniconda3/bin/python
+r_reinstall=yes
 
-if [ $DL = yes ] 2>/dev/null
+if [ $DL = yes ] >/dev/null 2>&1
 then
 	curl -fsSL http://repo.continuum.io/miniconda/Miniconda3-latest-MacOSX-x86_64.sh > install-python
-	exit 0	
-fi	
+	exit 0  
+fi  
 
-if [ $curr_python = $mini_path ];
+if [ ! $1 ]
+then
+	echo run the script with miniconda installer as the first argument
+	exit 1
+fi
+
+if [ $curr_python = $mini_path ]
 then
 	printf "Python is already installed, do you want to reinstall it ?
 [yes|no]> "
 	read r_reinstall
-else
-	MINICONDA_PATH=~/goinfre/miniconda3
-	SCRIPT=Miniconda3-latest-MacOSX-x86_64.sh
-
-	sh $SCRIPT -b -p $MINICONDA_PATH
-	rm $SCRIPT
-
-	export PATH="$MINICONDA_PATH/bin:$PATH"
-	pip install $REQUIREMENTS
-	clear
-	echo "Which python:"
-	which python
-	if grep -q "export PATH=/Users/$login/goinfre/miniconda3/bin" ~/.zshrc
+	if [ $r_reinstall = "yes" ] 2>/dev/null
 	then
-	   echo "export already in .zshrc";
-	else
-	   echo "adding export to .zshrc ...";
-	   echo "export PATH=/Users/$login/goinfre/miniconda3/bin" ~/.zshrc
+		rm -r $MINICONDA_PATH
+		echo Python has been removed.
 	fi
-	source ~/.zshrc
+fi
+
+if [ $r_reinstall = "no" ] 2>/dev/null
+then
+	echo exit.
+	exit 1
+fi
+
+if [ $r_reinstall = "yes" ] 2>/dev/null
+then
+	sh $1 -b -p $MINICONDA_PATH >/dev/null 2>&1
+	grep -q "export PATH=/Users/$login/goinfre/miniconda3/bin" ~/.zshrc
+	if [ $? = 1 ]
+	then
+		echo "export PATH=/Users/$login/goinfre/miniconda3/bin:$PATH" >> ~/.zshrc
+		source ~/.zshrc 2>/dev/null
+	fi
+	pip install $(echo $REQUIREMENTS) 1>/dev/null
+	echo Python has been installed.
+	exec zsh
 fi
