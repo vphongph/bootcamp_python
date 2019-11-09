@@ -3,8 +3,10 @@ import string
 
 
 def text_analyzer(text=None):
-    "This function counts the number of upper characters, lower characters,\n\
-punctuation and spaces in a given text."
+    """
+    This function counts the number of upper characters, lower characters,\n\
+punctuation and spaces in a given text.
+    """
     if not text:
         print("What is the text to analyse?")
         text = sys.stdin.read()
@@ -25,6 +27,3 @@ punctuation and spaces in a given text."
 - {lower:d} lower letters\n\
 - {punct:d} punctuation marks\n\
 - {space:d} spaces")
-
-
-text_analyzer()
