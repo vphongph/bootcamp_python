@@ -5,7 +5,7 @@ import string
 def text_analyzer(text=None):
     """
     This function counts the number of upper characters, lower characters,\n\
-punctuation and spaces in a given text.
+    punctuation and spaces in a given text.
     """
     if not text:
         print("What is the text to analyse?")
